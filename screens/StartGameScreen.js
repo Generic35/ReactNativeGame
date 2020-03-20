@@ -36,7 +36,14 @@ const styles = StyleSheet.create({
   inputContainer: {
     width: 300,
     maxWidth: '80%',
-    alignItems: 'center'
+    alignItems: 'center',
+    shadowColor: 'black',
+    shadowOffset: { width: 0, height: 4 },
+    shadowRadius: 6,
+    shadowOpacity: 0.26,
+    backgroundColor: 'white',
+    paddingVertical: 20,
+    borderRadius: 10
   }
 });
 export default StartGameScreen;
