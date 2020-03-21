@@ -1,26 +1,35 @@
 import React from 'react';
-import { StyleSheet, View, Text, Button, TextInput } from 'react-native';
+import {
+  StyleSheet,
+  View,
+  Text,
+  Button,
+  TouchableWithoutFeedback,
+  Keyboard
+} from 'react-native';
 import Card from './../components/Card';
 import colors from '../constants/colors';
 import Input from '../components/Input';
 
 const StartGameScreen = props => {
   return (
-    <View style={styles.screen}>
-      <Text style={styles.title}>Start a new game</Text>
-      <Card style={styles.card}>
-        <Text>Select a number</Text>
-        <Input style={styles.input} />
-        <View style={styles.buttonsContainer}>
-          <View style={styles.button}>
-            <Button title="Reset" color={colors.accent} />
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <View style={styles.screen}>
+        <Text style={styles.title}>Start a new game</Text>
+        <Card style={styles.card}>
+          <Text>Select a number</Text>
+          <Input style={styles.input} />
+          <View style={styles.buttonsContainer}>
+            <View style={styles.button}>
+              <Button title="Reset" color={colors.accent} />
+            </View>
+            <View style={styles.button}>
+              <Button title="Confirm" color={colors.primary} />
+            </View>
           </View>
-          <View style={styles.button}>
-            <Button title="Confirm" color={colors.primary} />
-          </View>
-        </View>
-      </Card>
-    </View>
+        </Card>
+      </View>
+    </TouchableWithoutFeedback>
   );
 };
 
