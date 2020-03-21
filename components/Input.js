@@ -1,25 +1,8 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { TextInput, StyleSheet } from 'react-native';
 
 const Input = props => {
-  const [enteredValue, setEnteredValue] = useState('');
-
-  const handleChange = inputValue => {
-    setEnteredValue(inputValue.replace(/[^0-9]/g, ''));
-  };
-  return (
-    <TextInput
-      {...props}
-      style={{ ...styles.input, ...props.style }}
-      blurOnSubmit
-      autoCapitalize="none"
-      autoCorrect={false}
-      keyboardType="number-pad"
-      maxLength={2}
-      onChangeText={handleChange}
-      value={enteredValue}
-    />
-  );
+  return <TextInput {...props} style={{ ...styles.input, ...props.style }} />;
 };
 
 const styles = StyleSheet.create({

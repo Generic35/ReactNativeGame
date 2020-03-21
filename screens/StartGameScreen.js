@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   StyleSheet,
   View,
@@ -12,13 +12,27 @@ import colors from '../constants/colors';
 import Input from '../components/Input';
 
 const StartGameScreen = props => {
+  const [enteredValue, setEnteredValue] = useState('');
+
+  const handleChange = inputValue => {
+    setEnteredValue(inputValue.replace(/[^0-9]/g, ''));
+  };
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={styles.screen}>
         <Text style={styles.title}>Start a new game</Text>
         <Card style={styles.card}>
           <Text>Select a number</Text>
-          <Input style={styles.input} />
+          <Input
+            style={styles.input}
+            blurOnSubmit
+            autoCapitalize="none"
+            autoCorrect={false}
+            keyboardType="number-pad"
+            maxLength={2}
+            onChangeText={handleChange}
+            value={enteredValue}
+          />
           <View style={styles.buttonsContainer}>
             <View style={styles.button}>
               <Button title="Reset" color={colors.accent} />
