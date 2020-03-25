@@ -8,7 +8,7 @@ const generateRandomNumber = (min, max, excluded) => {
   const maxFloored = Math.floor(max);
   const result = Math.floor(Math.random() * (maxFloored - minCeiled)) + min;
   if (result === excluded) {
-    generateRandomNumber(min, max, excluded);
+    return generateRandomNumber(min, max, excluded);
   } else {
     return result;
   }
