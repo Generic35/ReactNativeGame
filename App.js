@@ -8,7 +8,6 @@ import * as Font from 'expo-font';
 import { AppLoading } from 'expo';
 
 const fetchFonts = () => {
-  console.log('Loading fonts');
   return Font.loadAsync({
     'open-sans': require('./assets/fonts/OpenSans-Regular.ttf'),
     'open-sans-bold': require('./assets/fonts/OpenSans-Bold.ttf')
@@ -34,7 +33,6 @@ export default function App() {
     );
   }
 
-  console.log('done loading fonts');
   const handleConfigureNewGame = () => {
     setGuessRounds(0);
     setUserNumber(null);
