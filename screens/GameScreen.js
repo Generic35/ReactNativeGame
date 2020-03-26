@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Alert, StyleSheet, Text, View } from 'react-native';
+import { Alert, ScrollView, StyleSheet, Text, View } from 'react-native';
 import NumberContainer from '../components/NumberContainer';
 import Card from '../components/Card';
 import DefaultStyles from '../constants/default-styles';
@@ -18,17 +18,16 @@ const generateRandomNumber = (min, max, excluded) => {
 };
 
 const GameScreen = props => {
-  const [currentGuess, setCurrentGuess] = useState(
-    generateRandomNumber(1, 99, props.userChoice)
-  );
-  const [rounds, setRounds] = useState(0);
+  const initialGuess = generateRandomNumber(1, 99, props.userChoice);
+  const [currentGuess, setCurrentGuess] = useState(initialGuess);
+  const [passedGuesses, setPassedGuesses] = useState([initialGuess]);
   const currentLow = useRef(1);
   const currentHigh = useRef(100);
   const { userChoice, onGameOver } = props;
 
   useEffect(() => {
     if (userChoice === currentGuess) {
-      onGameOver(rounds);
+      onGameOver(passedGuesses.length);
     }
   }, [currentGuess, userChoice, onGameOver]);
 
@@ -46,7 +45,7 @@ const GameScreen = props => {
     if (direction === 'lower') {
       currentHigh.current = currentGuess;
     } else {
-      currentLow.current = currentGuess;
+      currentLow.current = currentGuess + 1;
     }
 
     const nextNumber = generateRandomNumber(
@@ -55,7 +54,9 @@ const GameScreen = props => {
       currentGuess
     );
     setCurrentGuess(nextNumber);
-    setRounds(currentRounds => currentRounds + 1);
+    setPassedGuesses(previousGuesses => {
+      return [nextNumber, ...previousGuesses];
+    });
   };
 
   return (
@@ -70,6 +71,13 @@ const GameScreen = props => {
           <Ionicons name="md-add" size={24} color="white" />
         </MainButton>
       </Card>
+      <ScrollView>
+        {passedGuesses.map(guess => (
+          <View key={guess}>
+            <Text>{guess}</Text>
+          </View>
+        ))}
+      </ScrollView>
     </View>
   );
 };
