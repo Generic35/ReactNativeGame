@@ -48,13 +48,7 @@ export default function App() {
     setGuessRounds(numGuessRounds);
   };
 
-  let content = (
-    <GameOverScreen
-      userNumber={1}
-      numberRounds={1}
-      onRestart={handleConfigureNewGame}
-    />
-  );
+  let content = <StartGameScreen onStartGame={handleStartGame} />;
 
   if (userNumber && guessRounds <= 0) {
     content = (
