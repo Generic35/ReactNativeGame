@@ -121,8 +121,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15
   },
   card: {
-    width: 300,
-    maxWidth: '80%',
+    width: '80%',
+    maxWidth: '95%',
+    minWidth: 300,
     alignItems: 'center'
   },
   input: {
