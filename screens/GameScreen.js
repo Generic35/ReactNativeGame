@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import {
   Alert,
+  Dimensions,
   FlatList,
   ScrollView,
   StyleSheet,
@@ -86,7 +87,13 @@ const GameScreen = props => {
           <Ionicons name="md-add" size={24} color="white" />
         </MainButton>
       </Card>
-      <View style={styles.listContainer}>
+      <View
+        style={
+          Dimensions.get('screen').width > 350
+            ? styles.listContainer
+            : styles.listContainerBig
+        }
+      >
         <FlatList
           data={passedGuesses}
           renderItem={renderListItem.bind(this, passedGuesses.length)}
@@ -112,13 +119,17 @@ const styles = StyleSheet.create({
   buttonContainer: {
     flexDirection: 'row',
     justifyContent: 'space-around',
-    marginTop: 20,
+    marginTop: Dimensions.get('window') > 600 ? 20 : 5,
     width: 400,
     maxWidth: '90%'
   },
   listContainer: {
     flex: 1,
     width: '60%'
+  },
+  listContainerBig: {
+    flex: 1,
+    width: '80%'
   },
   list: {
     flexGrow: 1,
