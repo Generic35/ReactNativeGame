@@ -1,110 +1,110 @@
 import React, { useState, useRef, useEffect } from 'react';
 import {
-  Alert,
-  Dimensions,
-  FlatList,
-  ScrollView,
-  StyleSheet,
+  View,
   Text,
-  View
+  StyleSheet,
+  Alert,
+  ScrollView,
+  FlatList,
+  Dimensions
 } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+
 import NumberContainer from '../components/NumberContainer';
 import Card from '../components/Card';
-import DefaultStyles from '../constants/default-styles';
 import MainButton from '../components/MainButton';
-import { Ionicons } from '@expo/vector-icons';
 import BodyText from '../components/BodyText';
+import DefaultStyles from '../constants/default-styles';
 
-const generateRandomNumber = (min, max, excluded) => {
-  const minCeiled = Math.ceil(min);
-  const maxFloored = Math.floor(max);
-  const result = Math.floor(Math.random() * (maxFloored - minCeiled)) + min;
-  if (result === excluded) {
-    return generateRandomNumber(min, max, excluded);
+const generateRandomBetween = (min, max, exclude) => {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  const rndNum = Math.floor(Math.random() * (max - min)) + min;
+  if (rndNum === exclude) {
+    return generateRandomBetween(min, max, exclude);
   } else {
-    return result;
+    return rndNum;
   }
 };
 
 const renderListItem = (listLength, itemData) => (
   <View style={styles.listItem}>
     <BodyText>#{listLength - itemData.index}</BodyText>
-    <Text>{itemData.item}</Text>
+    <BodyText>{itemData.item}</BodyText>
   </View>
 );
 
 const GameScreen = props => {
-  const initialGuess = generateRandomNumber(1, 99, props.userChoice);
-  const [currentGuess, setCurrentGuess] = useState(initialGuess.toString());
-  const [passedGuesses, setPassedGuesses] = useState([initialGuess].toString());
+  const initialGuess = generateRandomBetween(1, 100, props.userChoice);
+  const [currentGuess, setCurrentGuess] = useState(initialGuess);
+  const [pastGuesses, setPastGuesses] = useState([initialGuess.toString()]);
   const currentLow = useRef(1);
   const currentHigh = useRef(100);
+
   const { userChoice, onGameOver } = props;
 
   useEffect(() => {
-    if (userChoice === currentGuess) {
-      onGameOver(passedGuesses.length);
+    if (currentGuess === userChoice) {
+      onGameOver(pastGuesses.length);
     }
   }, [currentGuess, userChoice, onGameOver]);
 
   const nextGuessHandler = direction => {
     if (
-      (direction === 'lower' && currentGuess <= props.userChoice) ||
-      (direction === 'higher' && currentGuess >= props.userChoice)
+      (direction === 'lower' && currentGuess < props.userChoice) ||
+      (direction === 'greater' && currentGuess > props.userChoice)
     ) {
-      Alert.alert("Don't lie", 'You know this is wrong', [
-        { text: 'Sorry', style: 'cancel' }
+      Alert.alert("Don't lie!", 'You know that this is wrong...', [
+        { text: 'Sorry!', style: 'cancel' }
       ]);
       return;
     }
-
     if (direction === 'lower') {
       currentHigh.current = currentGuess;
     } else {
       currentLow.current = currentGuess + 1;
     }
-
-    const nextNumber = generateRandomNumber(
+    const nextNumber = generateRandomBetween(
       currentLow.current,
       currentHigh.current,
       currentGuess
     );
     setCurrentGuess(nextNumber);
-    setPassedGuesses(previousGuesses => {
-      return [nextNumber.toString(), ...previousGuesses];
-    });
+    // setRounds(curRounds => curRounds + 1);
+    setPastGuesses(curPastGuesses => [
+      nextNumber.toString(),
+      ...curPastGuesses
+    ]);
   };
+
+  let listContainerStyle = styles.listContainer;
+
+  if (Dimensions.get('window').width < 350) {
+    listContainerStyle = styles.listContainerBig;
+  }
 
   return (
     <View style={styles.screen}>
-      <Text style={DefaultStyles.title}>Opponent's guest</Text>
+      <Text style={DefaultStyles.title}>Opponent's Guess</Text>
       <NumberContainer>{currentGuess}</NumberContainer>
       <Card style={styles.buttonContainer}>
         <MainButton onPress={nextGuessHandler.bind(this, 'lower')}>
           <Ionicons name="md-remove" size={24} color="white" />
         </MainButton>
-        <MainButton onPress={nextGuessHandler.bind(this, 'higher')}>
+        <MainButton onPress={nextGuessHandler.bind(this, 'greater')}>
           <Ionicons name="md-add" size={24} color="white" />
         </MainButton>
       </Card>
-      <View
-        style={
-          Dimensions.get('screen').width > 350
-            ? styles.listContainer
-            : styles.listContainerBig
-        }
-      >
-        <FlatList
-          data={passedGuesses}
-          renderItem={renderListItem.bind(this, passedGuesses.length)}
-          keyExtractor={item => item}
-          contentContainerStyle={styles.list}
-        ></FlatList>
+      <View style={listContainerStyle}>
         {/* <ScrollView contentContainerStyle={styles.list}>
-          {passedGuesses.map((guess, i) =>
-            renderListItem(guess, passedGuesses.length - i)
-          )}
+          {pastGuesses.map((guess, index) => renderListItem(guess, pastGuesses.length - index))}
         </ScrollView> */}
+        <FlatList
+          keyExtractor={item => item}
+          data={pastGuesses}
+          renderItem={renderListItem.bind(this, pastGuesses.length)}
+          contentContainerStyle={styles.list}
+        />
       </View>
     </View>
   );
@@ -119,7 +119,7 @@ const styles = StyleSheet.create({
   buttonContainer: {
     flexDirection: 'row',
     justifyContent: 'space-around',
-    marginTop: Dimensions.get('window') > 600 ? 20 : 5,
+    marginTop: Dimensions.get('window').height > 600 ? 20 : 5,
     width: 400,
     maxWidth: '90%'
   },
@@ -133,16 +133,17 @@ const styles = StyleSheet.create({
   },
   list: {
     flexGrow: 1,
+    // alignItems: 'center',
     justifyContent: 'flex-end'
   },
   listItem: {
+    borderColor: '#ccc',
     borderWidth: 1,
-    flexDirection: 'row',
-    borderColor: 'grey',
     padding: 15,
     marginVertical: 10,
     backgroundColor: 'white',
-    justifyContent: 'space-around',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     width: '100%'
   }
 });

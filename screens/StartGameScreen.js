@@ -1,13 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
-  Dimensions,
-  StyleSheet,
-  View,
-  Text,
+  Alert,
   Button,
-  TouchableWithoutFeedback,
+  Dimensions,
   Keyboard,
-  Alert
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableWithoutFeedback,
+  View,
+  KeyboardAvoidingView
 } from 'react-native';
 import Card from './../components/Card';
 import colors from '../constants/colors';
@@ -20,6 +22,10 @@ const StartGameScreen = props => {
   const [enteredValue, setEnteredValue] = useState('');
   const [isConfirmed, setIsConfirmed] = useState(false);
   const [selectedNumber, setSelectedNumber] = useState();
+  const [buttonWidth, setButtonWidth] = useState(
+    Dimensions.get('screen').width
+  );
+
   const numberInputHandler = inputValue => {
     setEnteredValue(inputValue.replace(/[^0-9]/g, ''));
   };
@@ -62,49 +68,62 @@ const StartGameScreen = props => {
     );
   }
 
+  useEffect(() => {
+    const updateLayout = () => {
+      setButtonWidth(Dimensions.get('screen').width / 4);
+    };
+
+    Dimensions.addEventListener('change', updateLayout);
+
+    return () => {
+      Dimensions.removeEventListener('change', updateLayout);
+    };
+  });
+
   return (
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <View style={styles.screen}>
-        <Text style={styles.title}>Start a new game</Text>
-        <Card style={styles.card}>
-          <BodyText style={styles.text}>Select a number</BodyText>
-          <Input
-            style={styles.input}
-            blurOnSubmit
-            autoCapitalize="none"
-            autoCorrect={false}
-            keyboardType="number-pad"
-            maxLength={2}
-            onChangeText={numberInputHandler}
-            value={enteredValue}
-          />
-          <View style={styles.buttonsContainer}>
-            <View style={styles.button}>
-              <Button
-                title="Reset"
-                color={colors.accent}
-                onPress={resetHandler}
+    <ScrollView>
+      <KeyboardAvoidingView behavior="position" keyboardVerticalOffset={30}>
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+          <View style={styles.screen}>
+            <Text style={styles.title}>Start a new game</Text>
+            <Card style={styles.card}>
+              <BodyText style={styles.text}>Select a number</BodyText>
+              <Input
+                style={styles.input}
+                blurOnSubmit
+                autoCapitalize="none"
+                autoCorrect={false}
+                keyboardType="number-pad"
+                maxLength={2}
+                onChangeText={numberInputHandler}
+                value={enteredValue}
               />
-            </View>
-            <View style={styles.button}>
-              <Button
-                title="Confirm"
-                color={colors.primary}
-                onPress={confirmationHandler}
-              />
-            </View>
+              <View style={styles.buttonsContainer}>
+                <View style={{ width: buttonWidth }}>
+                  <Button
+                    title="Reset"
+                    color={colors.accent}
+                    onPress={resetHandler}
+                  />
+                </View>
+                <View style={{ width: buttonWidth }}>
+                  <Button
+                    title="Confirm"
+                    color={colors.primary}
+                    onPress={confirmationHandler}
+                  />
+                </View>
+              </View>
+            </Card>
+            {confirmedOutput}
           </View>
-        </Card>
-        {confirmedOutput}
-      </View>
-    </TouchableWithoutFeedback>
+        </TouchableWithoutFeedback>
+      </KeyboardAvoidingView>
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
-  button: {
-    width: Dimensions.get('window').width / 4
-  },
   screen: {
     flex: 1,
     padding: 10,
@@ -139,4 +158,5 @@ const styles = StyleSheet.create({
     fontFamily: 'open-sans'
   }
 });
+
 export default StartGameScreen;
