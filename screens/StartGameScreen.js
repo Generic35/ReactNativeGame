@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import {
+  Dimensions,
   StyleSheet,
   View,
   Text,
@@ -102,7 +103,7 @@ const StartGameScreen = props => {
 
 const styles = StyleSheet.create({
   button: {
-    width: 100
+    width: Dimensions.get('window').width / 4
   },
   screen: {
     flex: 1,
