@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import {
-  View,
-  Text,
-  StyleSheet,
-  Button,
-  TouchableWithoutFeedback,
-  Keyboard,
   Alert,
+  Button,
   Dimensions,
+  Keyboard,
+  KeyboardAvoidingView,
   ScrollView,
-  KeyboardAvoidingView
+  StyleSheet,
+  Text,
+  TouchableWithoutFeedback,
+  View
 } from 'react-native';
 
 import Card from '../components/Card';
@@ -24,7 +24,9 @@ const StartGameScreen = props => {
   const [enteredValue, setEnteredValue] = useState('');
   const [confirmed, setConfirmed] = useState(false);
   const [selectedNumber, setSelectedNumber] = useState();
-  const [ buttonWidth, setButtonWidth ] = useState(Dimensions.get('window').width / 4);
+  const [buttonWidth, setButtonWidth] = useState(
+    Dimensions.get('window').width / 4
+  );
 
   const numberInputHandler = inputText => {
     setEnteredValue(inputText.replace(/[^0-9]/g, ''));
@@ -39,7 +41,7 @@ const StartGameScreen = props => {
     const updateLayout = () => {
       setButtonWidth(Dimensions.get('window').width / 4);
     };
-  
+
     Dimensions.addEventListener('change', updateLayout);
     return () => {
       Dimensions.removeEventListener('change', updateLayout);
@@ -99,14 +101,14 @@ const StartGameScreen = props => {
                 value={enteredValue}
               />
               <View style={styles.buttonContainer}>
-                <View style={{width: buttonWidth}}>
+                <View style={{ width: buttonWidth }}>
                   <Button
                     title="Reset"
                     onPress={resetInputHandler}
                     color={Colors.accent}
                   />
                 </View>
-                <View style={{width: buttonWidth}}>
+                <View style={{ width: buttonWidth }}>
                   <Button
                     title="Confirm"
                     onPress={confirmInputHandler}
